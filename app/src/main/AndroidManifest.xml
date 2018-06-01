@@ -28,7 +28,9 @@
                         - onDataSetChanged querying the list of all plants in the database
                         - getViewAt creating a RemoteView using the plant_widget layout
                         - getViewAt setting the fillInIntent for widget_plant_image with the plant ID as extras -->
-
+        <service
+            android:name=".GridViewsService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
         <!-- TODO (3); Register the RemoteViewsService in the Manifest -->
 
         <provider

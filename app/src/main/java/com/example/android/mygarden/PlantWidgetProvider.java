@@ -16,6 +16,7 @@ package com.example.android.mygarden;
 * limitations under the License.
 */
 
+import android.app.IntentService;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -28,8 +29,24 @@ import android.widget.RemoteViews;
 import com.example.android.mygarden.provider.PlantContract;
 import com.example.android.mygarden.ui.MainActivity;
 import com.example.android.mygarden.ui.PlantDetailActivity;
+import com.example.android.mygarden.utils.PlantUtils;
 
 public class PlantWidgetProvider extends AppWidgetProvider {
+
+
+    private static RemoteViews getGardenGridRemoteView(Context context) {
+
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.id.widget_grid_view);
+        Intent intent = new Intent(context, GridViewsService.class);
+        views.setRemoteAdapter(R.id.widget_grid_view, intent);
+
+        Intent appIntent = new Intent(context, PlantDetailActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        views.setPendingIntentTemplate(R.id.widget_grid_view, pendingIntent);
+        views.setEmptyView(R.id.widget_grid_view, R.id.empty_view);
+
+        return views;
+    }
 
     // setImageViewResource to update the widget’s image
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
@@ -38,7 +55,7 @@ public class PlantWidgetProvider extends AppWidgetProvider {
         // TODO (4): separate the updateAppWidget logic into getGardenGridRemoteView and getSinglePlantRemoteView
         // TODO (5): Use getAppWidgetOptions to get widget width and use the appropriate RemoteView method
         // TODO (6): Set the PendingIntent template in getGardenGridRemoteView to launch PlantDetailActivity
-        
+
         Intent intent;
         if (plantId == PlantContract.INVALID_PLANT_ID) {
             intent = new Intent(context, MainActivity.class);
